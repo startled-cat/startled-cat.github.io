@@ -83,11 +83,6 @@ function renderCanvas() {
         pixel.style.width = `${pixelSize}px`;
         pixel.style.height = `${pixelSize}px`;
         
-        pixel.addEventListener('mousedown', (e) => startDrawing(e, i));
-        pixel.addEventListener('mouseover', (e) => draw(e, i));
-        pixel.addEventListener('touchstart', (e) => startDrawing(e, i), { passive: false });
-        pixel.addEventListener('touchmove', (e) => handleTouchMove(e, i), { passive: false });
-        
         canvas.appendChild(pixel);
     }
 
@@ -105,10 +100,12 @@ function calculatePixelSize() {
 
 // ========== DRAWING LOGIC ==========
 let isDrawing = false;
+let lastPaintedPixelIndex = -1;
 
 function startDrawing(e, index) {
     e.preventDefault();
     isDrawing = true;
+    lastPaintedPixelIndex = -1;
     paintPixel(index);
 }
 
@@ -118,23 +115,72 @@ function draw(e, index) {
     else paintPixel(index);
 }
 
-function handleTouchMove(e, index) {
-    e.preventDefault();
-    if (!isDrawing) return;
-    paintPixel(index);
+// Calculate which pixel is at the given client coordinates
+function getPixelAtCoordinates(clientX, clientY) {
+    const canvasRect = canvas.getBoundingClientRect();
+    const x = clientX - canvasRect.left;
+    const y = clientY - canvasRect.top;
+    
+    // Calculate pixel size from canvas dimensions
+    const pixelWidth = canvasRect.width / state.width;
+    const pixelHeight = canvasRect.height / state.height;
+    
+    // Get grid position
+    const gridX = Math.floor(x / pixelWidth);
+    const gridY = Math.floor(y / pixelHeight);
+    
+    // Validate position is within bounds
+    if (gridX < 0 || gridY < 0 || gridX >= state.width || gridY >= state.height) {
+        return -1;
+    }
+    
+    // Convert to pixel index
+    return gridY * state.width + gridX;
 }
 
-document.addEventListener('mouseup', () => {
-    isDrawing = false;
-    saveToStorage();
+// Handle pointer down (works for both mouse and touch)
+canvas.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    isDrawing = true;
+    lastPaintedPixelIndex = -1;
+    const index = getPixelAtCoordinates(e.clientX, e.clientY);
+    if (index >= 0) {
+        paintPixel(index);
+        lastPaintedPixelIndex = index;
+    }
+}, { passive: false });
+
+// Handle pointer move (works for both mouse and touch)
+document.addEventListener('pointermove', (e) => {
+    if (!isDrawing) return;
+    
+    const index = getPixelAtCoordinates(e.clientX, e.clientY);
+    // Only paint if we moved to a different pixel
+    if (index >= 0 && index !== lastPaintedPixelIndex) {
+        paintPixel(index);
+        lastPaintedPixelIndex = index;
+    }
 });
 
-document.addEventListener('touchend', () => {
-    isDrawing = false;
-    saveToStorage();
+// Handle pointer up (works for both mouse and touch)
+document.addEventListener('pointerup', () => {
+    if (isDrawing) {
+        isDrawing = false;
+        saveToStorage();
+    }
+});
+
+// Handle pointer cancel (for interrupted touch)
+document.addEventListener('pointercancel', () => {
+    if (isDrawing) {
+        isDrawing = false;
+        saveToStorage();
+    }
 });
 
 function paintPixel(index) {
+    if (index < 0 || index >= state.pixels.length) return;
+    
     state.pixels[index] = state.selectedColor;
     
     const pixelElement = canvas.children[index];
