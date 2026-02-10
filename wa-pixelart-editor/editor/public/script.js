@@ -241,7 +241,7 @@ function updateSizeButtonStates() {
 
 // ========== CANVAS OPERATIONS ==========
 function clearCanvas() {
-    if (confirm('Clear all pixels? This action cannot be undone.')) {
+    if (confirm('Wyczyścić wszystkie piksele? Tej akcji nie można cofnąć.')) {
         state.pixels = new Array(state.width * state.height).fill('#000000');
         renderCanvas();
         saveToStorage();
@@ -254,7 +254,7 @@ function exportImage() {
     const config = loadGitHubConfig();
     
     if (!config || !config.token || !config.owner || !config.repo) {
-        alert('❌ GitHub not configured!\n\nPlease click "GitHub Setup" and enter your credentials.');
+        alert('❌ GitHub nie skonfigurowany!\n\nProszę kliknąć "⚙️ Ustawienia" i wprowadzić swoje dane logowania.');
         return;
     }
 
@@ -267,14 +267,14 @@ function exportImage() {
     };
 
     exportBtn.disabled = true;
-    exportBtn.textContent = '⏳ Sending...';
+    exportBtn.textContent = '⏳ Wysyłanie...';
 
     commitToGitHub(imageData, config)
         .then(result => {
             exportBtn.disabled = false;
-            exportBtn.textContent = '📤 Send Image';
+            exportBtn.textContent = '📤 Wyślij obraz';
             
-            // Also update display config to show this new image
+            // Aktualizuj konfigurację displayu, aby pokazać nowy obraz
             return updateDisplayConfig(result.file, config).then(() => result);
         })
         .then(result => {
@@ -282,8 +282,8 @@ function exportImage() {
         })
         .catch(error => {
             exportBtn.disabled = false;
-            exportBtn.textContent = '📤 Send Image';
-            alert('❌ Failed to commit:\n\n' + error.message);
+            exportBtn.textContent = '📤 Wyślij obraz';
+            alert('❌ Błąd wysyłania:\n\n' + error.message);
             console.error('GitHub commit error:', error);
         });
 }
@@ -384,7 +384,7 @@ function showSuccessModal(data) {
     `;
     
     const title = document.createElement('h3');
-    title.textContent = '✓ Image sent!';
+    title.textContent = '✓ Obraz wysłany!';
     title.style.cssText = 'margin: 0; font-size: 14px; text-transform: uppercase; color: #00aa00;';
     
     const fileInfo = document.createElement('p');
@@ -392,7 +392,7 @@ function showSuccessModal(data) {
     fileInfo.innerHTML = `<strong>File:</strong> ${data.file}`;
     
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = 'Zamknij';
     closeBtn.style.cssText = `
         padding: 8px 15px;
         background: linear-gradient(to bottom, #dfdfdf, #b0b0b0);
@@ -479,7 +479,7 @@ function showGitHubSettings() {
     `;
     
     const title = document.createElement('h3');
-    title.textContent = 'GitHub Configuration';
+    title.textContent = 'Konfiguracja GitHub';
     title.style.cssText = 'margin: 0; font-size: 14px; text-transform: uppercase;';
     
     const createInput = (label, value, type = 'text') => {
@@ -505,15 +505,15 @@ function showGitHubSettings() {
         return { div, input };
     };
     
-    const { div: tokenDiv, input: tokenInput } = createInput('GitHub Token', config.token, 'password');
-    const { div: ownerDiv, input: ownerInput } = createInput('Repository Owner', config.owner);
-    const { div: repoDiv, input: repoInput } = createInput('Repository Name', config.repo);
+    const { div: tokenDiv, input: tokenInput } = createInput('Token GitHub', config.token, 'password');
+    const { div: ownerDiv, input: ownerInput } = createInput('Właściciel repozytorium', config.owner);
+    const { div: repoDiv, input: repoInput } = createInput('Nazwa repozytorium', config.repo);
     
     const buttonGroup = document.createElement('div');
     buttonGroup.style.cssText = 'display: flex; gap: 10px; justify-content: flex-end;';
     
     const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = 'Anuluj';
     cancelBtn.style.cssText = `
         flex: 1;
         padding: 8px 15px;
@@ -527,7 +527,7 @@ function showGitHubSettings() {
     cancelBtn.onclick = () => modal.remove();
     
     const saveBtn = document.createElement('button');
-    saveBtn.textContent = 'Save';
+    saveBtn.textContent = 'Zapisz';
     saveBtn.style.cssText = `
         flex: 1;
         padding: 8px 15px;
@@ -544,12 +544,12 @@ function showGitHubSettings() {
         const repo = repoInput.value.trim();
         
         if (!token || !owner || !repo) {
-            alert('❌ Please fill in all fields');
+            alert('❌ Proszę wypełnić wszystkie pola');
             return;
         }
         
         saveGitHubConfig(token, owner, repo);
-        alert('✓ GitHub settings saved!');
+        alert('✓ Ustawienia GitHub zapisane!');
         modal.remove();
     };
     
@@ -570,20 +570,20 @@ async function showCurrentDisplay() {
     const config = loadGitHubConfig();
     
     if (!config || !config.token || !config.owner || !config.repo) {
-        alert('❌ GitHub not configured!\n\nPlease click "⚙️ GitHub Setup" and enter your credentials.');
+        alert('❌ GitHub nie skonfigurowany!\n\nProszę kliknąć "⚙️ Ustawienia" i wprowadzić swoje dane logowania.');
         return;
     }
 
     displayBtn.disabled = true;
-    displayBtn.textContent = '⏳ Loading...';
+    displayBtn.textContent = '⏳ Ładowanie...';
 
     try {
         const configData = await loadDisplayConfig(config);
         displayBtn.disabled = false;
-        displayBtn.textContent = '📺 Current Display';
+        displayBtn.textContent = '📺 Bieżący wyświetlacz';
         
         if (!configData || !configData.image) {
-            alert('📭 No image set for display yet!\n\nUse Gallery to select an image.');
+            alert('📭 Brak obrazu do wyświetlenia!\n\nUżyj Galerii, aby wybrać obraz.');
             return;
         }
         
@@ -592,8 +592,8 @@ async function showCurrentDisplay() {
         showCurrentDisplayModal(image, configData.image);
     } catch (error) {
         displayBtn.disabled = false;
-        displayBtn.textContent = '📺 Current Display';
-        alert('❌ Failed to load display config:\n\n' + error.message);
+        displayBtn.textContent = '📺 Bieżący wyświetlacz';
+        alert('❌ Błąd ładowania konfiguracji:\n\n' + error.message);
         console.error('Display config error:', error);
     }
 }
@@ -679,7 +679,7 @@ function showCurrentDisplayModal(image, imagePath) {
     `;
     
     const title = document.createElement('h3');
-    title.textContent = 'Currently Displayed';
+    title.textContent = 'Aktualnie wyświetlane';
     title.style.cssText = 'margin: 0; font-size: 14px; text-transform: uppercase; color: #ff00ff;';
     
     const filename = document.createElement('p');
@@ -714,7 +714,7 @@ function showCurrentDisplayModal(image, imagePath) {
     }
     
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = 'Zamknij';
     closeBtn.style.cssText = `
         padding: 8px 15px;
         background: linear-gradient(to bottom, #dfdfdf, #b0b0b0);
@@ -782,18 +782,18 @@ async function updateDisplayConfig(imagePath, config) {
 
 function setAsDisplayImage(image, config, btn) {
     btn.disabled = true;
-    btn.textContent = '⏳ Setting...';
+    btn.textContent = '⏳ Ustawianie...';
 
     updateDisplayConfig(image.path, config)
         .then(() => {
             btn.disabled = false;
-            btn.textContent = '📺 Set as Display Image';
-            alert('✓ Display image updated!\n\nThe display will now show this image.');
+            btn.textContent = '📺 Ustaw jako obraz wyświetlacza';
+            alert('✓ Obraz wyświetlacza zaktualizowany!\n\nWyświetlacz będzie teraz pokazywać ten obraz.');
         })
         .catch(error => {
             btn.disabled = false;
-            btn.textContent = '📺 Set as Display Image';
-            alert('❌ Failed to update display:\n\n' + error.message);
+            btn.textContent = '📺 Ustaw jako obraz wyświetlacza';
+            alert('❌ Błąd aktualizacji wyświetlacza:\n\n' + error.message);
             console.error('Set display error:', error);
         });
 }
@@ -808,25 +808,97 @@ async function showGallery() {
     }
 
     galleryBtn.disabled = true;
-    galleryBtn.textContent = '⏳ Loading...';
+    galleryBtn.textContent = '⏳ Ładowanie...';
+
+    // Show loading modal immediately
+    const loadingModal = showGalleryLoadingModal();
 
     try {
         const images = await loadGalleryImages(config);
+        
+        // Remove loading modal
+        loadingModal.remove();
+        
         galleryBtn.disabled = false;
-        galleryBtn.textContent = '🖼️ Gallery';
+        galleryBtn.textContent = '🖼️ Galeria';
         
         if (images.length === 0) {
-            alert('📭 No images in gallery yet!\n\nCreate and send some pixel art first.');
+            alert('📭 Brak obrazów w galerii!\n\nNajpierw utwórz i wyślij pixel art.');
             return;
         }
         
         displayGalleryModal(images, config);
     } catch (error) {
+        loadingModal.remove();
         galleryBtn.disabled = false;
-        galleryBtn.textContent = '🖼️ Gallery';
-        alert('❌ Failed to load gallery:\n\n' + error.message);
+        galleryBtn.textContent = '🖼️ Galeria';
+        alert('❌ Błąd ładowania galerii:\n\n' + error.message);
         console.error('Gallery load error:', error);
     }
+}
+
+function showGalleryLoadingModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const container = document.createElement('div');
+    container.style.cssText = `
+        background: #c0c0c0;
+        border: 2px solid;
+        border-color: #ffffff #000000 #000000 #ffffff;
+        padding: 40px;
+        max-width: 90%;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    const spinner = document.createElement('div');
+    spinner.style.cssText = `
+        font-size: 48px;
+        animation: spin 1s linear infinite;
+    `;
+    spinner.textContent = '⏳';
+    
+    const text = document.createElement('p');
+    text.textContent = 'Ładowanie galerii...';
+    text.style.cssText = `
+        margin: 0;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        color: #000;
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    container.appendChild(spinner);
+    container.appendChild(text);
+    modal.appendChild(container);
+    document.body.appendChild(modal);
+    
+    return modal;
 }
 
 async function loadGalleryImages(config) {
@@ -910,7 +982,7 @@ function displayGalleryModal(images, config) {
     `;
     
     const title = document.createElement('h3');
-    title.textContent = 'Gallery';
+    title.textContent = 'Galeria';
     title.style.cssText = 'margin: 0; font-size: 14px; text-transform: uppercase;';
     
     const gallery = document.createElement('div');
@@ -987,7 +1059,7 @@ function displayGalleryModal(images, config) {
     });
     
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = 'Zamknij';
     closeBtn.style.cssText = `
         padding: 8px 15px;
         background: linear-gradient(to bottom, #dfdfdf, #b0b0b0);
@@ -1068,7 +1140,7 @@ function showImageOptions(image, config) {
     buttonGroup.style.cssText = 'display: flex; gap: 10px; flex-direction: column;';
     
     const loadBtn = document.createElement('button');
-    loadBtn.textContent = '📥 Load into Editor';
+    loadBtn.textContent = '📥 Załaduj do edytora';
     loadBtn.style.cssText = `
         flex: 1;
         padding: 10px 15px;
@@ -1086,7 +1158,7 @@ function showImageOptions(image, config) {
     };
     
     const displayBtn = document.createElement('button');
-    displayBtn.textContent = '📺 Set as Display Image';
+    displayBtn.textContent = '📺 Ustaw jako obraz wyświetlacza';
     displayBtn.style.cssText = `
         flex: 1;
         padding: 10px 15px;
@@ -1104,7 +1176,7 @@ function showImageOptions(image, config) {
     };
     
     const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '🗑️ Delete from Repo';
+    deleteBtn.textContent = '🗑️ Usuń z repozytorium';
     deleteBtn.style.cssText = `
         flex: 1;
         padding: 10px 15px;
@@ -1117,14 +1189,14 @@ function showImageOptions(image, config) {
         color: #fff;
     `;
     deleteBtn.onclick = () => {
-        if (confirm(`Delete "${image.name}"?\n\nThis cannot be undone.`)) {
+        if (confirm(`Usunąć "${image.name}"?\n\nTej akcji nie można cofnąć.`)) {
             deleteImageFromGallery(image, config);
             modal.remove();
         }
     };
     
     const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = 'Anuluj';
     cancelBtn.style.cssText = `
         flex: 1;
         padding: 10px 15px;
@@ -1162,7 +1234,7 @@ function loadImageToEditor(image) {
     initializePalette();
     saveToStorage();
     
-    alert('✓ Image loaded into editor!');
+    alert('✓ Obraz załadowany do edytora!');
 }
 
 async function deleteImageFromGallery(image, config) {
@@ -1190,9 +1262,9 @@ async function deleteImageFromGallery(image, config) {
             throw new Error(`Failed to delete image: ${response.status}`);
         }
 
-        alert('✓ Image deleted!');
+        alert('✓ Obraz usunięty!');
     } catch (error) {
-        alert('❌ Failed to delete image:\n\n' + error.message);
+        alert('❌ Błąd usuwania obrazu:\n\n' + error.message);
         console.error('Delete error:', error);
     }
 }
