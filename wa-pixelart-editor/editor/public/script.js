@@ -23,12 +23,13 @@ let state = {
 const canvas = document.getElementById('canvas');
 const palette = document.getElementById('palette');
 const clearBtn = document.getElementById('clearBtn');
-const newBtn = document.getElementById('newBtn');
 const displayBtn = document.getElementById('displayBtn');
 const galleryBtn = document.getElementById('galleryBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 const exportBtn = document.getElementById('exportBtn');
 const sizeBtns = document.querySelectorAll('.size-btn');
+const menuToggle = document.getElementById('menuToggle');
+const actionButtons = document.getElementById('actionButtons');
 
 // ========== INITIALIZATION ==========
 function init() {
@@ -39,12 +40,24 @@ function init() {
 }
 
 function setupEventListeners() {
+    // Menu toggle
+    menuToggle.addEventListener('click', () => {
+        actionButtons.classList.toggle('open');
+    });
+
+    // Close menu when a button is clicked
+    const buttons = actionButtons.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            actionButtons.classList.remove('open');
+        });
+    });
+
     sizeBtns.forEach(btn => {
         btn.addEventListener('click', handleSizeChange);
     });
 
     clearBtn.addEventListener('click', clearCanvas);
-    newBtn.addEventListener('click', newProject);
     displayBtn.addEventListener('click', showCurrentDisplay);
     galleryBtn.addEventListener('click', showGallery);
     settingsBtn.addEventListener('click', showGitHubSettings);
@@ -235,19 +248,6 @@ function clearCanvas() {
     }
 }
 
-function newProject() {
-    if (confirm('Start a new project? Unsaved work will be lost.')) {
-        state = {
-            width: 16,
-            height: 16,
-            selectedColor: '#ffffff',
-            pixels: new Array(16 * 16).fill('#000000')
-        };
-        renderCanvas();
-        initializePalette();
-        saveToStorage();
-    }
-}
 
 // ========== EXPORT FUNCTIONALITY ==========
 function exportImage() {
@@ -384,20 +384,12 @@ function showSuccessModal(data) {
     `;
     
     const title = document.createElement('h3');
-    title.textContent = '✓ Committed to GitHub!';
+    title.textContent = '✓ Image sent!';
     title.style.cssText = 'margin: 0; font-size: 14px; text-transform: uppercase; color: #00aa00;';
     
     const fileInfo = document.createElement('p');
     fileInfo.style.cssText = 'margin: 0; font-size: 12px;';
     fileInfo.innerHTML = `<strong>File:</strong> ${data.file}`;
-    
-    const urlInfo = document.createElement('p');
-    urlInfo.style.cssText = 'margin: 0; font-size: 12px; word-break: break-all;';
-    urlInfo.innerHTML = `<strong>View on GitHub:</strong><br><a href="${data.url}" target="_blank" style="color: #0057aa; text-decoration: underline; font-size: 11px;">${data.url}</a>`;
-    
-    const message = document.createElement('p');
-    message.style.cssText = 'margin: 0; font-size: 11px; padding: 10px; background: #e0e0e0; border: 1px solid #999;';
-    message.textContent = 'Your pixel art has been committed to GitHub!';
     
     const closeBtn = document.createElement('button');
     closeBtn.textContent = 'Close';
@@ -413,8 +405,6 @@ function showSuccessModal(data) {
     
     container.appendChild(title);
     container.appendChild(fileInfo);
-    container.appendChild(urlInfo);
-    container.appendChild(message);
     container.appendChild(closeBtn);
     modal.appendChild(container);
     document.body.appendChild(modal);
@@ -519,10 +509,6 @@ function showGitHubSettings() {
     const { div: ownerDiv, input: ownerInput } = createInput('Repository Owner', config.owner);
     const { div: repoDiv, input: repoInput } = createInput('Repository Name', config.repo);
     
-    const infoText = document.createElement('p');
-    infoText.style.cssText = 'margin: 0; font-size: 10px; padding: 10px; background: #e0e0e0; border: 1px solid #999; line-height: 1.4;';
-    infoText.innerHTML = `<strong>How to get a token:</strong><br>1. Go to GitHub Settings → Developer settings → Personal access tokens<br>2. Create a token with "contents" permission<br>3. Paste it here`;
-    
     const buttonGroup = document.createElement('div');
     buttonGroup.style.cssText = 'display: flex; gap: 10px; justify-content: flex-end;';
     
@@ -574,7 +560,6 @@ function showGitHubSettings() {
     container.appendChild(tokenDiv);
     container.appendChild(ownerDiv);
     container.appendChild(repoDiv);
-    container.appendChild(infoText);
     container.appendChild(buttonGroup);
     modal.appendChild(container);
     document.body.appendChild(modal);
@@ -1205,7 +1190,7 @@ async function deleteImageFromGallery(image, config) {
             throw new Error(`Failed to delete image: ${response.status}`);
         }
 
-        alert('✓ Image deleted from repository!');
+        alert('✓ Image deleted!');
     } catch (error) {
         alert('❌ Failed to delete image:\n\n' + error.message);
         console.error('Delete error:', error);

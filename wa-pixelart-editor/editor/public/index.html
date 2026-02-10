@@ -7,37 +7,38 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Pixel Art Editor</title>
-    <link rel="stylesheet" href="style.css?v=1707604800">
+    <link rel="stylesheet" href="style.css?v=1707605600">
 </head>
 <body>
     <div class="container">
         <header class="header">
             <h1 class="title">✦ PIXEL ART EDITOR ✦</h1>
+            <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
         </header>
 
         <div class="controls-section">
-            <div class="size-selector">
-                <h2>Canvas Size</h2>
-                <div class="button-group">
-                    <button class="size-btn" data-width="16" data-height="16">16x16</button>
-                    <button class="size-btn" data-width="32" data-height="16">32x16</button>
+            <div class="essential-controls">
+                <div class="size-selector">
+                    <h2>Size</h2>
+                    <div class="button-group">
+                        <button class="size-btn" data-width="16" data-height="16">16x16</button>
+                        <button class="size-btn" data-width="32" data-height="16">32x16</button>
+                    </div>
+                </div>
+
+                <div class="color-selector">
+                    <h2>Color</h2>
+                    <div class="palette" id="palette">
+                        <!-- Colors will be inserted here by JS -->
+                    </div>
                 </div>
             </div>
 
-            <div class="color-selector">
-                <h2>Color</h2>
-                <div class="palette" id="palette">
-                    <!-- Colors will be inserted here by JS -->
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-clear" id="clearBtn">Clear Canvas</button>
-                <button class="btn btn-new" id="newBtn">New Project</button>
-                <button class="btn btn-display" id="displayBtn">📺 Current Display</button>
+            <div class="action-buttons" id="actionButtons">
+                <button class="btn btn-display" id="displayBtn">📺 Display</button>
                 <button class="btn btn-gallery" id="galleryBtn">🖼️ Gallery</button>
-                <button class="btn btn-settings" id="settingsBtn">⚙️ GitHub Setup</button>
-                <button class="btn btn-export" id="exportBtn">📤 Send Image</button>
+                <button class="btn btn-clear" id="clearBtn">🗑️ Clear</button>
+                <button class="btn btn-settings" id="settingsBtn">⚙️ Setup</button>
             </div>
         </div>
 
@@ -47,11 +48,13 @@
             </div>
         </div>
 
+        <button class="btn btn-export btn-primary" id="exportBtn">📤 Send Image to Display</button>
+
         <div class="info-text">
             Drag to paint • Select size before starting
         </div>
     </div>
 
-    <script src="script.js?v=1707604800"></script>
+    <script src="script.js?v=1707605600"></script>
 </body>
 </html>

@@ -44,6 +44,34 @@ body {
     border: 2px solid;
     border-color: #ffffff #000000 #000000 #ffffff;
     box-shadow: inset 1px 1px 0 #dfdfdf;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(to bottom, #dfdfdf, #b0b0b0);
+    border: 2px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    box-shadow: inset 1px 1px 0 #ffffff;
+}
+
+.menu-toggle:active {
+    border-color: #000000 #ffffff #ffffff #000000;
+    box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 #ffffff;
 }
 
 .title {
@@ -63,9 +91,16 @@ body {
     box-shadow: inset 1px 1px 0 #ffffff;
 }
 
+.essential-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
 .size-selector,
 .color-selector {
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
 
 .size-selector h2,
@@ -145,25 +180,37 @@ body {
 }
 
 .action-buttons {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.action-buttons.open {
+    max-height: 500px;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .btn {
-    padding: 12px 15px;
+    padding: 10px 8px;
     background: linear-gradient(to bottom, #dfdfdf, #b0b0b0);
     border: 2px solid;
     border-color: #ffffff #000000 #000000 #ffffff;
     color: #000;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
     user-select: none;
     transition: all 0.1s;
     box-shadow: inset 1px 1px 0 #ffffff;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .btn:active {
@@ -201,6 +248,15 @@ body {
     color: #000;
     font-weight: bold;
     font-size: 13px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: block;
 }
 
 .canvas-wrapper {
@@ -255,6 +311,10 @@ body {
         font-size: 16px;
     }
 
+    .essential-controls {
+        grid-template-columns: 1fr;
+    }
+
     .size-btn {
         font-size: 10px;
         padding: 6px 8px;
@@ -265,9 +325,13 @@ body {
         height: 36px;
     }
 
+    .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .btn {
-        font-size: 11px;
-        padding: 10px 12px;
+        font-size: 10px;
+        padding: 8px 6px;
     }
 
     .pixel {
