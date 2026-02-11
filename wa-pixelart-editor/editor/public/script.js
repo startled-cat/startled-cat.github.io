@@ -33,6 +33,7 @@ const actionButtons = document.getElementById('actionButtons');
 
 // ========== INITIALIZATION ==========
 function init() {
+    parseQueryParams();
     loadFromStorage();
     setupEventListeners();
     initializePalette();
@@ -408,6 +409,20 @@ function showSuccessModal(data) {
     container.appendChild(closeBtn);
     modal.appendChild(container);
     document.body.appendChild(modal);
+}
+
+// ========== QUERY PARAMS ==========
+function parseQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    // get github config from query params if available
+    const token = params.get('token');
+    const owner = params.get('owner');
+    const repo = params.get('repo');
+    if (token && owner && repo) {
+        saveGitHubConfig(token, owner, repo);
+    }
+    
+    console.debug('Parsed query params:', { token, owner, repo });
 }
 
 // ========== LOCAL STORAGE ==========
